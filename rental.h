@@ -1,11 +1,8 @@
-// rental.h
-#ifndef RENTAL_H
-#define RENTAL_H
+#ifndef RENTAL_MANAGEMENT_H
+#define RENTAL_MANAGEMENT_H
 
-#define BLOCK_SIZE 5  // Define the block size (number of rentals per block)
-#define MAX_RENTALS 100
+#define MAX_RENTALS_PER_BLOCK 5
 
-// Define the structures
 typedef struct {
     int customerID;
     char firstName[50];
@@ -14,15 +11,15 @@ typedef struct {
 } Customer;
 
 typedef struct {
+    char title[100];
+    float rentalPrice;
+} Game;
+
+typedef struct {
     int day;
     int month;
     int year;
 } Date;
-
-typedef struct {
-    char title[100];
-    float rentalPrice;
-} Game;
 
 typedef struct {
     int rentalID;
@@ -30,20 +27,26 @@ typedef struct {
     Game game;
     Date rentalDate;
     Date returnDate;
-    float totalPrice;
 } Rental;
 
-typedef struct {
-    Rental rentals[BLOCK_SIZE];
-    int count; // Number of rentals in the block
-} RentalBlock;
+typedef struct Block {
+    Rental rentals[MAX_RENTALS_PER_BLOCK];
+    int rentalCount;
+    struct Block* next;
+} Block;
 
-// Function prototypes
-Customer createCustomer();
+// Function prototypes for rental operations
 Rental createRental();
-void displayRental(Rental r);
-Rental* searchRentalInBlock(RentalBlock *block, int rentalID);
-void saveBlockToFile(RentalBlock *block, const char *filename);
-int loadBlocksFromFile(RentalBlock blocks[], const char *filename);
+void displayRental(const Rental* rental);
+Customer createCustomer();
+Game createGame();
+Date createDate();
 
-#endif
+// Function prototypes for storage management
+void addRental(Block** head, Rental rental);
+Rental* searchRental(Block* head, int rentalID);
+void displayAllRentals(Block* head);
+void saveRentals(Block* head, const char* filename);
+Block* loadRentals(const char* filename);
+
+#endif // RENTAL_MANAGEMENT_H
