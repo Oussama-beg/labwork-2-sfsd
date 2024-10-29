@@ -1,63 +1,53 @@
-// rental.c
 #include <stdio.h>
-#include <string.h>
 #include "rental.h"
 
-// Function to create a customer
+Date createDate() {
+    Date date;
+    printf("Enter Date (DD MM YYYY): ");
+    scanf("%d %d %d", &date.day, &date.month, &date.year);
+    return date;
+}
+
 Customer createCustomer() {
-    Customer c;
+    Customer customer;
     printf("Enter Customer ID: ");
-    scanf("%d", &c.customerID);
+    scanf("%d", &customer.customerID);
     printf("Enter First Name: ");
-    scanf("%s", c.firstName);
+    scanf("%s", customer.firstName);
     printf("Enter Last Name: ");
-    scanf("%s", c.lastName);
+    scanf("%s", customer.lastName);
     printf("Enter Contact Info: ");
-    scanf("%s", c.contactInfo);
-    return c;
+    scanf("%s", customer.contactInfo);
+    return customer;
 }
 
-// Function to create a rental
-Rental createRental() {
-    Rental r;
-    r.customer = createCustomer();
-
-    printf("Enter Rental ID: ");
-    scanf("%d", &r.rentalID);
-
+Game createGame() {
+    Game game;
     printf("Enter Game Title: ");
-    scanf("%s", r.game.title);
-
+    scanf("%s", game.title);
     printf("Enter Rental Price: ");
-    scanf("%f", &r.game.rentalPrice);
-
-    printf("Enter Rental Date (DD MM YYYY): ");
-    scanf("%d %d %d", &r.rentalDate.day, &r.rentalDate.month, &r.rentalDate.year);
-
-    printf("Enter Return Date (DD MM YYYY): ");
-    scanf("%d %d %d", &r.returnDate.day, &r.returnDate.month, &r.returnDate.year);
-
-    r.totalPrice = r.game.rentalPrice; // Simple assumption for rental price calculation
-
-    return r;
+    scanf("%f", &game.rentalPrice);
+    return game;
 }
 
-// Function to display a rental
-void displayRental(Rental r) {
-    printf("\nRental ID: %d\n", r.rentalID);
-    printf("Customer: %s %s\n", r.customer.firstName, r.customer.lastName);
-    printf("Game Title: %s\n", r.game.title);
-    printf("Rental Date: %02d/%02d/%d\n", r.rentalDate.day, r.rentalDate.month, r.rentalDate.year);
-    printf("Return Date: %02d/%02d/%d\n", r.returnDate.day, r.returnDate.month, r.returnDate.year);
-    printf("Total Price: $%.2f\n", r.totalPrice);
+Rental createRental() {
+    Rental rental;
+    rental.customer = createCustomer();
+    printf("Enter Rental ID: ");
+    scanf("%d", &rental.rentalID);
+    rental.game = createGame();
+    printf("Enter Rental Date:\n");
+    rental.rentalDate = createDate();
+    printf("Enter Return Date:\n");
+    rental.returnDate = createDate();
+    return rental;
 }
 
-// Function to search for a rental in a block by ID
-Rental* searchRentalInBlock(RentalBlock *block, int rentalID) {
-    for (int i = 0; i < block->count; i++) {
-        if (block->rentals[i].rentalID == rentalID) {
-            return &block->rentals[i];
-        }
-    }
-    return NULL;
+void displayRental(const Rental* rental) {
+    printf("\nRental ID: %d\n", rental->rentalID);
+    printf("Customer Name: %s %s\n", rental->customer.firstName, rental->customer.lastName);
+    printf("Game Title: %s\n", rental->game.title);
+    printf("Rental Date: %02d/%02d/%04d\n", rental->rentalDate.day, rental->rentalDate.month, rental->rentalDate.year);
+    printf("Return Date: %02d/%02d/%04d\n", rental->returnDate.day, rental->returnDate.month, rental->returnDate.year);
+    printf("Rental Price: %.2f\n", rental->game.rentalPrice);
 }
